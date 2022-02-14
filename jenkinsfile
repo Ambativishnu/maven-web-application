@@ -1,0 +1,27 @@
+node {  
+     properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), 
+pipelineTriggers([pollSCM('* * * * *')])])  
+
+
+def mavenHome = tool name: "maven3.8.4"
+stage('CheckoutCode'){
+git branch: 'development', credentialsId: 'bcf7c9a2-af60-4e9e-8296-19ff87c82e89', url: 'https://github.com/Ambativishnu/maven-web-application.git'
+}
+stage('Build'){
+sh "${mavenHome}/bin/mvn claen package"
+}
+stage('ExecuteSonarqubeReport'){
+sh "${mavenhome}/bin/mvn sonar:sonar"
+}
+stage('UploadArtifactIntoNexusRepo'){
+sh "${mavenhome)/bin/mvn depoly"
+}
+stage('DeployAppTomcatserver'){
+sshagent(['0ddf21f9-9d70-4a82-b21c-80878b3ebc5d']) {
+ sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@13.233.142.70:/opt/apache-tomcat-9.0.58/webapps/"
+    
+}
+}
+
+}
+ 
