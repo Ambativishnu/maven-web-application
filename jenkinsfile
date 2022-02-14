@@ -14,7 +14,7 @@ stage('ExecuteSonarqubeReport'){
 sh "${mavenhome}/bin/mvn sonar:sonar"
 }
 stage('UploadArtifactIntoNexusRepo'){
-sh "${mavenhome)/bin/mvn depoly"
+sh "${mavenhome}/bin/mvn depoly"
 }
 stage('DeployAppTomcatserver'){
 sshagent(['0ddf21f9-9d70-4a82-b21c-80878b3ebc5d']) {
